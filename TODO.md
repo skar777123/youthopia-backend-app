@@ -1,12 +1,7 @@
-# TODO List for User and Event Modules Implementation
+# Event Creation and Update Implementation
 
-- [ ] Update app.module.ts to include MongooseModule and CacheModule for Redis
-- [ ] Generate User module using Nest CLI
-- [ ] Generate Event module using Nest CLI
-- [ ] Create DTOs for User (CreateUserDto, LoginDto, RedeemDto, SpinWheelDto)
-- [ ] Create DTOs for Event (if needed)
-- [ ] Implement UserService with methods: register, login, fetchData, redeem, spinWheel, getPoints (with Yid generation and Redis caching)
-- [ ] Implement EventService with methods: fetchData, getLeaderboard, getSchedule
-- [ ] Create UserController with endpoints for registration, login, fetchdata, redeem, spin wheel, points fetch
-- [ ] Create EventController with endpoints for fetch data, leaderboard, event schedule
-- [ ] Test the application and endpoints
+- [x] Create DTOs for event creation and update (create-event.dto.ts and update-event.dto.ts)
+- [x] Update event.service.ts to add create and update methods
+- [x] Create event.controller.ts with endpoints for creation and update
+- [x] Update event.module.ts to include the controller, service, and MongooseModule for EventSchema
+- [x] Update app.module.ts to import EventModule if not already imported
