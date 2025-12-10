@@ -1,0 +1,39 @@
+import { IsNotEmpty, IsNumber, IsObject, IsOptional, IsString } from 'class-validator';
+
+export class CreateEventDto {
+    @IsNotEmpty()
+    @IsString()
+    name: string;
+
+    @IsNotEmpty()
+    @IsString()
+    description: string;
+
+    @IsNotEmpty()
+    @IsString()
+    location: string;
+
+    @IsOptional()
+    @IsNumber()
+    participant_count: number;
+
+    @IsOptional()
+    @IsNumber()
+    completed: number;
+
+    @IsNotEmpty()
+    @IsNumber()
+    points: number;
+
+    @IsNotEmpty()
+    @IsObject()
+    prizes: Record<string, any>;
+
+    @IsOptional()
+    @IsObject()
+    schedule: Record<string, any>;
+
+    @IsOptional()
+    @IsString()
+    images: string;
+}

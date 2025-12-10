@@ -5,7 +5,7 @@ export class transactionSchema {
   @Prop()
   event: string;
 
-  @Prop()
+  @Prop({ type: Object })
   user: Object;
 
   @Prop()

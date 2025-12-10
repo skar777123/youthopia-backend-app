@@ -1,0 +1,20 @@
+import { Module } from '@nestjs/common';
+import { MongooseModule } from '@nestjs/mongoose';
+import { RedeemService } from './redeem.service';
+import { RedeemController } from './redeem.controller';
+import { redeem, redeemSchema } from '../schema/redeem.schema';
+import { transaction, transactionSchema } from '../schema/transaction.schema';
+import { User, UserSchema } from '../schema/user.schema';
+
+@Module({
+  imports: [
+    MongooseModule.forFeature([
+      { name: redeemSchema.name, schema: redeem },
+      { name: transactionSchema.name, schema: transaction },
+      { name: UserSchema.name, schema: User },
+    ]),
+  ],
+  controllers: [RedeemController],
+  providers: [RedeemService],
+})
+export class RedeemModule { }

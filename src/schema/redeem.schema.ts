@@ -8,7 +8,7 @@ export class redeemSchema {
   @Prop()
   points: number;
 
-  @Prop()
+  @Prop({ type: Object })
   transactions: Object;
 }
 

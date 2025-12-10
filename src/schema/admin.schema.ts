@@ -11,7 +11,7 @@ export class adminSchema {
   @Prop({ default: 'admin' })
   role: String;
 
-  @Prop()
+  @Prop({ type: Object })
   transactions: Object;
 }
 

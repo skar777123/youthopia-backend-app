@@ -20,10 +20,10 @@ export class EventSchema {
   @Prop({ required: true })
   points: number;
 
-  @Prop({ required: true })
+  @Prop({ required: true, type: Object })
   prizes: Object;
 
-  @Prop()
+  @Prop({ type: Object })
   schedule: Object;
 
   @Prop()
