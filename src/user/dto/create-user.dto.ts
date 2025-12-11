@@ -37,7 +37,4 @@ export class CreateUserDto {
   @IsNotEmpty()
   password: string;
 
-  @IsNumber()
-  @IsNotEmpty()
-  points: number;
 }

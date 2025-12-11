@@ -32,7 +32,7 @@ export class UserSchema {
   @Prop({ required: true, unique: true })
   Yid: string;
 
-  @Prop({ required: true })
+  @Prop({ required: true, default: 5})
   points: number;
 
   @Prop({ type: Object })
