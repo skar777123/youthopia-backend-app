@@ -19,7 +19,7 @@ export class UserService {
 
   async register(createUserDto: CreateUserDto): Promise<UserSchema> {
     const yid = this.generateYid();
-    const user = new this.userModel({ ...createUserDto, Yid: yid, points: 0 });
+    const user = new this.userModel({ ...createUserDto, Yid: yid, points: 5 });
     return user.save();
   }
 
