@@ -8,6 +8,9 @@ export class UserSchema {
   @Prop({ required: true })
   institute: string;
 
+  @Prop({required: true, unique: true})
+  email: string;
+
   @Prop({ required: true, unique: true })
   mobile: number;
 

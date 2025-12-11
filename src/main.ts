@@ -16,14 +16,14 @@ async function bootstrap() {
   fastifyInstance.register(require('@fastify/helmet'));
 
   // CORS origins from environment
-  // const corsOrigins = process.env.CORS_ORIGINS
-  //   ? process.env.CORS_ORIGINS.split(',')
-  //   : ['http://localhost:3000'];
+  const corsOrigins = process.env.CORS_ORIGINS
+    ? process.env.CORS_ORIGINS.split(',')
+    : ['*'];
 
-  // app.enableCors({
-  //   origin: corsOrigins,
-  //   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-  // });
+  app.enableCors({
+    origin: corsOrigins,
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+  });
 
   // Enhanced validation to prevent NoSQL injection
   // app.useGlobalPipes(
