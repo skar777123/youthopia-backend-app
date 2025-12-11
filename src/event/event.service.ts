@@ -6,18 +6,83 @@ import { UpdateEventDto } from './dto/update-event.dto';
 import { ParticipateEventDto } from './dto/participate-event.dto';
 import { Event, EventSchema } from '../schema/event.schema';
 import { User, UserSchema } from '../schema/user.schema';
+import { leaderboardSchema } from '../schema/leaderboard.schema';
+import { transactionSchema } from '../schema/transaction.schema';
 
 @Injectable()
 export class EventService {
   constructor(
     @InjectModel(EventSchema.name) private eventModel: Model<EventSchema>,
     @InjectModel(UserSchema.name) private userModel: Model<UserSchema>,
+    @InjectModel(leaderboardSchema.name) private leaderboardModel: Model<leaderboardSchema>,
+    @InjectModel(transactionSchema.name) private transactionModel: Model<transactionSchema>,
   ) { }
 
   async create(createEventDto: CreateEventDto): Promise<EventSchema> {
     const createdEvent = new this.eventModel(createEventDto);
     return createdEvent.save();
   }
+
+  // ... (rest of the file until participate)
+
+  // (Assuming I should keep existing methods, I'll use target replacement carefully)
+
+  // Method to complete event
+  async complete(eventId: string, userDto: ParticipateEventDto): Promise<any> {
+    const { Yid, name, _id } = userDto;
+    const event = await this.eventModel.findById(eventId);
+    if (!event) {
+      throw new NotFoundException('Event not found');
+    }
+
+    const user = await this.userModel.findById(_id) as any;
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    if (user.Yid !== Yid) {
+      throw new NotFoundException('User verification failed: Yid mismatch');
+    }
+
+    // Check if already completed
+    if (user.completed && user.completed[eventId]) {
+      return { message: 'Event already completed by user' };
+    }
+
+    // Add points
+    const points = event.points || 0;
+    user.points += points;
+
+    // Update user completed
+    user.completed = { ...user.completed, [eventId]: { name: event.name, date: new Date(), points: points } };
+    user.markModified('completed');
+    await user.save();
+
+    // Update event completed count (optional if needed)
+    // event.completed += 1; // Assuming completed is a number count
+    // await event.save();
+
+    // Update Leaderboard
+    await this.updateLeaderboard(user.name, user.points);
+
+    // Create Transaction
+    const newTransaction = new this.transactionModel({
+      event: `Event Complete: ${event.name}`,
+      user: { name: user.name, Yid: user.Yid },
+      points: points,
+      admin: 'System'
+    });
+    await newTransaction.save();
+
+    return { message: 'Event completed successfully', points };
+  }
+
+  private async updateLeaderboard(name: string, points: number) {
+    await this.leaderboardModel.findOneAndUpdate({ name }, { points }, { upsert: true });
+  }
+
+  // existing participate method...
+
 
   async findAll(): Promise<EventSchema[]> {
     return this.eventModel.find().exec();

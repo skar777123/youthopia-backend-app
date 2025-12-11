@@ -39,4 +39,9 @@ export class EventController {
   participate(@Param('id') id: string, @Body() participateEventDto: ParticipateEventDto) {
     return this.eventService.participate(id, participateEventDto);
   }
+
+  @Post(':id/complete')
+  complete(@Param('id') id: string, @Body() participateEventDto: ParticipateEventDto) {
+    return this.eventService.complete(id, participateEventDto);
+  }
 }
