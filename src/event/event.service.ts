@@ -50,7 +50,7 @@ export class EventService {
   }
 
   async participate(eventId: string, userDto: ParticipateEventDto): Promise<any> {
-    const { Yid, name, _id } = userDto;
+    const { Yid, name, _id, team } = userDto;
     const event = await this.eventModel.findById(eventId);
     if (!event) {
       throw new NotFoundException('Event not found');
@@ -65,10 +65,6 @@ export class EventService {
       throw new NotFoundException('User verification failed: Yid mismatch');
     }
 
-    if (user.name !== name) {
-      throw new NotFoundException('User verification failed: Name mismatch');
-    }
-
     // Check if user already registered
     if (!user.registered) {
       user.registered = {};
@@ -78,13 +74,27 @@ export class EventService {
       return { message: 'User already registered for this event' };
     }
 
+    // Update event registered
+    if (!event.registered) {
+      event.registered = {};
+    }
+
+    const participantData = team ? { name: name, team: team, Yid: Yid } : { name: name, Yid: Yid };
+
+    // We update the map using Object.assign or spread to ensure Mongoose detects change if it's mixed type
+    // But since it's @Prop({ type: Object }), we should just update the object and markModified.
+    // Use Yid as key for uniqueness check within event if possible, but user might be in multiple teams? 
+    // Assuming 1 participation per user per event.
+
+    event.registered = { ...event.registered, [Yid]: participantData };
+    event.markModified('registered');
+
     // Update event participant count
     event.participant_count += 1;
     await event.save();
 
     // Update user registered events
     user.registered = { ...user.registered, [eventId]: { name: event.name, date: new Date() } };
-    // Mongoose might not detect deep object changes unless we markModified or reassign
     user.markModified('registered');
     await user.save();
 

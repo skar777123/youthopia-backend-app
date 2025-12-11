@@ -7,11 +7,16 @@ import { LoginDto } from './dto/login.dto';
 import { RedeemDto } from './dto/redeem.dto';
 import * as crypto from 'crypto';
 
+import { leaderboardSchema } from '../schema/leaderboard.schema';
+import { transactionSchema } from '../schema/transaction.schema';
+
 @Injectable()
 export class UserService {
   constructor(
     @InjectModel(UserSchema.name) private userModel: Model<UserSchema>,
-  ) {}
+    @InjectModel(leaderboardSchema.name) private leaderboardModel: Model<leaderboardSchema>,
+    @InjectModel(transactionSchema.name) private transactionModel: Model<transactionSchema>,
+  ) { }
 
   private generateYid(): string {
     return crypto.randomBytes(3).toString('hex').toUpperCase().slice(0, 6);
@@ -20,7 +25,22 @@ export class UserService {
   async register(createUserDto: CreateUserDto): Promise<UserSchema> {
     const yid = this.generateYid();
     const user = new this.userModel({ ...createUserDto, Yid: yid, points: 5 });
-    return user.save();
+    const savedUser = await user.save();
+
+    // Create leaderboard entry
+    const newLeaderboardEntry = new this.leaderboardModel({ name: savedUser.name, points: 5 });
+    await newLeaderboardEntry.save();
+
+    // Create transaction for initial points
+    const newTransaction = new this.transactionModel({
+      event: 'Registration',
+      user: { name: savedUser.name, Yid: savedUser.Yid },
+      points: 5,
+      admin: 'System'
+    });
+    await newTransaction.save();
+
+    return savedUser;
   }
 
   async login(loginDto: LoginDto): Promise<UserSchema> {
@@ -45,7 +65,20 @@ export class UserService {
     }
     user.points -= redeemDto.points;
     user.redeemption = { ...user.redeemption, [redeemDto.item]: true };
-    return user.save();
+    await user.save();
+
+    // Update leaderboard (points decrease)
+    await this.updateLeaderboard(user.name, user.points);
+    // Create transaction
+    const newTransaction = new this.transactionModel({
+      event: `Redeem: ${redeemDto.item}`,
+      user: { name: user.name, Yid: user.Yid },
+      points: -redeemDto.points,
+      admin: 'System'
+    });
+    await newTransaction.save();
+
+    return user;
   }
 
   async spinWheel(yid: string): Promise<{ points: number }> {
@@ -56,7 +89,22 @@ export class UserService {
     const points = Math.floor(Math.random() * 100) + 1; // Random points 1-100
     user.points += points;
     await user.save();
+
+    await this.updateLeaderboard(user.name, user.points);
+
+    const newTransaction = new this.transactionModel({
+      event: 'Spin Wheel',
+      user: { name: user.name, Yid: user.Yid },
+      points: points,
+      admin: 'System'
+    });
+    await newTransaction.save();
+
     return { points };
+  }
+
+  private async updateLeaderboard(name: string, points: number) {
+    await this.leaderboardModel.findOneAndUpdate({ name }, { points }, { upsert: true });
   }
 
   async getPoints(yid: string): Promise<{ points: number }> {
