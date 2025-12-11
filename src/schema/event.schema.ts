@@ -17,7 +17,7 @@ export class EventSchema {
   @Prop({ default: 0 })
   completed: number;
 
-  @Prop({ required: true })
+  @Prop({ required: true, type: Object })
   registered: Object;
 
   @Prop({ required: true })
