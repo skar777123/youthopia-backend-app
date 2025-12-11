@@ -2,6 +2,7 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors } fr
 import { EventService } from './event.service';
 import { CreateEventDto } from './dto/create-event.dto';
 import { UpdateEventDto } from './dto/update-event.dto';
+import { ParticipateEventDto } from './dto/participate-event.dto';
 import { CacheInterceptor } from '@nestjs/cache-manager';
 
 @Controller('event')
@@ -35,7 +36,7 @@ export class EventController {
   }
 
   @Post(':id/participate')
-  participate(@Param('id') id: string, @Body('userId') userId: string) {
-    return this.eventService.participate(id, userId);
+  participate(@Param('id') id: string, @Body() participateEventDto: ParticipateEventDto) {
+    return this.eventService.participate(id, participateEventDto);
   }
 }

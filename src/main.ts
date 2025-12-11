@@ -4,7 +4,7 @@ import {
   NestFastifyApplication,
 } from '@nestjs/platform-fastify';
 import { AppModule } from './app.module';
-// import { ValidationPipe } from '@nestjs/common';
+import { ValidationPipe } from '@nestjs/common';
 import client from 'prom-client';
 
 async function bootstrap() {
@@ -26,12 +26,12 @@ async function bootstrap() {
   });
 
   // Enhanced validation to prevent NoSQL injection
-  // app.useGlobalPipes(
-  //   new ValidationPipe({
-  //     whitelist: true,
-  //     forbidNonWhitelisted: true,
-  //   }),
-  // );
+  app.useGlobalPipes(
+    new ValidationPipe({
+      whitelist: true,
+      forbidNonWhitelisted: true,
+    }),
+  );
 
   const port = process.env.PORT || 6001;
   await app.listen(port, '0.0.0.0');

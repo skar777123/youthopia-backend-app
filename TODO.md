@@ -1,7 +1,11 @@
-# Event Creation and Update Implementation
+# TODO: Implement User Registration for Events
 
-- [x] Create DTOs for event creation and update (create-event.dto.ts and update-event.dto.ts)
-- [x] Update event.service.ts to add create and update methods
-- [x] Create event.controller.ts with endpoints for creation and update
-- [x] Update event.module.ts to include the controller, service, and MongooseModule for EventSchema
-- [x] Update app.module.ts to import EventModule if not already imported
+## Steps to Complete
+
+- [x] Update src/schema/event.schema.ts to add 'isTeam' boolean field (default false)
+- [x] Create src/user/dto/register-single.dto.ts for single user registration
+- [x] Create src/user/dto/register-team.dto.ts for team registration
+- [x] Edit src/user/user.service.ts to add registerSingle and registerTeam methods
+- [x] Edit src/user/user.controller.ts to add register-single and register-team endpoints
+- [x] Test the endpoints for both single and team registrations
+- [ ] Update related modules if needed (e.g., app.module.ts)
