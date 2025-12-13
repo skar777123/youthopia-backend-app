@@ -9,7 +9,7 @@ import { RedeemDto } from './dto/redeem.dto';
 @UseInterceptors(CacheInterceptor)
 @Controller('user')
 export class UserController {
-  constructor(private readonly userService: UserService) {}
+  constructor(private readonly userService: UserService) { }
 
   @Post('register')
   async register(@Body() createUserDto: CreateUserDto) {
@@ -45,5 +45,10 @@ export class UserController {
   @Get('points/:yid')
   async getPoints(@Param('yid') yid: string) {
     return this.userService.getPoints(yid);
+  }
+
+  @Get('spins/:yid')
+  async getSpins(@Param('yid') yid: string) {
+    return this.userService.getSpins(yid);
   }
 }

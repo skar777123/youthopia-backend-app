@@ -115,7 +115,7 @@ export class EventService {
   }
 
   async participate(eventId: string, userDto: ParticipateEventDto): Promise<any> {
-    const { Yid, name, _id, team } = userDto;
+    const { Yid, name, _id, team, points } = userDto;
     const event = await this.eventModel.findById(eventId);
     if (!event) {
       throw new NotFoundException('Event not found');
@@ -161,6 +161,28 @@ export class EventService {
     // Update user registered events
     user.registered = { ...user.registered, [eventId]: { name: event.name, date: new Date() } };
     user.markModified('registered');
+
+    // Award spin for every 4th registration
+    const registrationCount = Object.keys(user.registered).length;
+    if (registrationCount % 4 === 0) {
+      user.spins = (user.spins || 0) + 1;
+    }
+    await user.save();
+
+    // Award points for registration if provided
+    if (points && points > 0) {
+      user.points += points;
+      await this.updateLeaderboard(user.name, user.points);
+
+      const newTransaction = new this.transactionModel({
+        event: `Event Registration: ${event.name}`,
+        user: { name: user.name, Yid: user.Yid },
+        points: points,
+        admin: 'System'
+      });
+      await newTransaction.save();
+    }
+
     await user.save();
 
     return { message: 'Successfully registered for event', event, user };

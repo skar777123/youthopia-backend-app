@@ -1,4 +1,4 @@
-import { Injectable, BadRequestException, NotFoundException, UseInterceptors } from '@nestjs/common';
+import { Injectable, BadRequestException, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { UserSchema } from '../schema/user.schema';
@@ -81,13 +81,19 @@ export class UserService {
     return user;
   }
 
-  async spinWheel(yid: string): Promise<{ points: number }> {
+  async spinWheel(yid: string): Promise<{ points: number; spins: number }> {
     const user = await this.userModel.findOne({ Yid: yid });
     if (!user) {
       throw new NotFoundException('User not found');
     }
+
+    if (!user.spins || user.spins <= 0) {
+      throw new BadRequestException('No spins available');
+    }
+
     const points = Math.floor(Math.random() * 100) + 1; // Random points 1-100
     user.points += points;
+    user.spins -= 1;
     await user.save();
 
     await this.updateLeaderboard(user.name, user.points);
@@ -100,7 +106,7 @@ export class UserService {
     });
     await newTransaction.save();
 
-    return { points };
+    return { points, spins: user.spins };
   }
 
   private async updateLeaderboard(name: string, points: number) {
@@ -113,5 +119,13 @@ export class UserService {
       throw new NotFoundException('User not found');
     }
     return { points: user.points };
+  }
+
+  async getSpins(yid: string): Promise<{ spins: number }> {
+    const user = await this.userModel.findOne({ Yid: yid });
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+    return { spins: user.spins || 0 };
   }
 }

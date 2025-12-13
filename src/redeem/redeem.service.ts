@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { CreateRedeemDto } from './dto/create-redeem.dto';
@@ -60,7 +60,7 @@ export class RedeemService {
     if (user.points < item.points) {
       // throw new BadRequestException('Insufficient points');
       // BadRequestException needs to be imported
-      throw new Error('Insufficient points');
+      throw new BadRequestException('Insufficient points');
     }
 
     // Deduct points

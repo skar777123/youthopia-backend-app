@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsString, IsOptional } from 'class-validator';
+import { IsNotEmpty, IsString, IsOptional, IsNumber } from 'class-validator';
 
 export class ParticipateEventDto {
     @IsNotEmpty()
@@ -15,4 +15,8 @@ export class ParticipateEventDto {
 
     @IsOptional()
     team?: Object | Array<any>;
+
+    @IsOptional()
+    @IsNumber()
+    points?: number;
 }

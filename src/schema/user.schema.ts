@@ -8,7 +8,7 @@ export class UserSchema {
   @Prop({ required: true })
   institute: string;
 
-  @Prop({required: true, unique: true})
+  @Prop({ required: true, unique: true })
   email: string;
 
   @Prop({ required: true, unique: true })
@@ -32,8 +32,11 @@ export class UserSchema {
   @Prop({ required: true, unique: true })
   Yid: string;
 
-  @Prop({ required: true})
+  @Prop({ required: true })
   points: number;
+
+  @Prop({ default: 0 })
+  spins: number;
 
   @Prop({ type: Object })
   transaction: Object;
