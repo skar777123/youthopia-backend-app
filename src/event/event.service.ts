@@ -23,11 +23,7 @@ export class EventService {
     return createdEvent.save();
   }
 
-  // ... (rest of the file until participate)
 
-  // (Assuming I should keep existing methods, I'll use target replacement carefully)
-
-  // Method to complete event
   async complete(eventId: string, userDto: ParticipateEventDto): Promise<any> {
     const { Yid, name, _id } = userDto;
     const event = await this.eventModel.findById(eventId);

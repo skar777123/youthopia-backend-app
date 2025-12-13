@@ -30,6 +30,7 @@ async function bootstrap() {
     new ValidationPipe({
       whitelist: true,
       forbidNonWhitelisted: true,
+      transform: true,
     }),
   );
 
@@ -38,6 +39,7 @@ async function bootstrap() {
   console.log(`Application is running on: http://localhost:${port}`);
 }
 bootstrap();
+// Force rebuild
 const collectDefaultMetrics = client.collectDefaultMetrics;
 
 collectDefaultMetrics({ register: client.register });
