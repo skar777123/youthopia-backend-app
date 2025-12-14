@@ -9,6 +9,9 @@ export class EventSchema {
   description: string;
 
   @Prop({ required: true })
+  date: string
+
+  @Prop({ required: true })
   location: string;
 
   @Prop({ required: true })
@@ -22,6 +25,7 @@ export class EventSchema {
 
   @Prop({ required: true })
   time: string
+
   @Prop({ required: true })
   points: number;
 
