@@ -121,6 +121,9 @@ export class RedeemService {
     redeemItem.markModified('approved');
     redeemItem.markModified('transactions');
 
+    // Increment completed count
+    redeemItem.completed = (redeemItem.completed || 0) + 1;
+
     return redeemItem.save();
   }
 }

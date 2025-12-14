@@ -80,8 +80,8 @@ export class EventService {
   // existing participate method...
 
 
-  async findAll(): Promise<EventSchema[]> {
-    return this.eventModel.find().exec();
+  async findAll(query?: any): Promise<EventSchema[]> {
+    return this.eventModel.find(query || {}).exec();
   }
 
   async findOne(id: string): Promise<EventSchema> {

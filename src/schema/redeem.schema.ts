@@ -13,6 +13,9 @@ export class redeemSchema {
 
   @Prop({ type: Object })
   approved: Object;
+
+  @Prop({ default: 0 })
+  completed: number;
 }
 
 export const redeem = SchemaFactory.createForClass(redeemSchema);
