@@ -132,4 +132,12 @@ export class UserService {
     }
     return { spins: user.spins || 0 };
   }
+
+  async deleteUser(yid: string): Promise<UserSchema> {
+    const user = await this.userModel.findOneAndDelete({ Yid: yid });
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+    return user;
+  }
 }

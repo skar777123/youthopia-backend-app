@@ -1,4 +1,4 @@
-import { Controller, Post, Get, Put, Body, Param, UseInterceptors, NotFoundException } from '@nestjs/common';
+import { Controller, Post, Get, Put, Delete, Body, Param, UseInterceptors, NotFoundException } from '@nestjs/common';
 import { CacheInterceptor, CacheTTL } from '@nestjs/cache-manager';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -55,5 +55,10 @@ export class UserController {
   @Get('spins/:yid')
   async getSpins(@Param('yid') yid: string) {
     return this.userService.getSpins(yid);
+  }
+
+  @Delete(':yid')
+  async deleteUser(@Param('yid') yid: string) {
+    return this.userService.deleteUser(yid);
   }
 }

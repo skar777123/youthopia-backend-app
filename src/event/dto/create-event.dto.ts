@@ -36,4 +36,8 @@ export class CreateEventDto {
     @IsOptional()
     @IsString()
     images: string;
+
+    @IsOptional()
+    @IsString()
+    category: string;
 }

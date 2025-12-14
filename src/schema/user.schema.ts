@@ -35,9 +35,6 @@ export class UserSchema {
   @Prop({ required: true })
   points: number;
 
-  @Prop({ default: 0 })
-  spins: number;
-
   @Prop({ type: Object })
   transaction: Object;
 
@@ -52,6 +49,9 @@ export class UserSchema {
 
   @Prop({ type: Object })
   Schedule: Object;
+
+  @Prop({ type: Object })
+  Spin: Object;
 }
 
 export const User = SchemaFactory.createForClass(UserSchema);

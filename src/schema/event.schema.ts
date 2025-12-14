@@ -31,6 +31,9 @@ export class EventSchema {
 
   @Prop()
   images: string;
+  
+  @Prop()
+  category: string;
 }
 
 export const Event = SchemaFactory.createForClass(EventSchema);
