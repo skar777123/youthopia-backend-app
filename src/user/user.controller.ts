@@ -21,6 +21,11 @@ export class UserController {
     return this.userService.login(loginDto);
   }
 
+  @Get()
+  async findAll() {
+    return this.userService.findAll();
+  }
+
   @Get('data/:yid')
   @UseInterceptors(CacheInterceptor)
   @CacheTTL(300)

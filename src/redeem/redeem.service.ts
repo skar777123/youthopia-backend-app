@@ -6,6 +6,7 @@ import { UpdateRedeemDto } from './dto/update-redeem.dto';
 import { redeem, redeemSchema } from '../schema/redeem.schema';
 import { transaction, transactionSchema } from '../schema/transaction.schema';
 import { User, UserSchema } from '../schema/user.schema';
+import { leaderboardSchema } from '../schema/leaderboard.schema';
 
 @Injectable()
 export class RedeemService {
@@ -13,6 +14,7 @@ export class RedeemService {
     @InjectModel(redeemSchema.name) private redeemModel: Model<redeemSchema>,
     @InjectModel(transactionSchema.name) private transactionModel: Model<transactionSchema>,
     @InjectModel(UserSchema.name) private userModel: Model<UserSchema>,
+    @InjectModel(leaderboardSchema.name) private leaderboardModel: Model<leaderboardSchema>,
   ) { }
 
   async create(createRedeemDto: CreateRedeemDto): Promise<redeemSchema> {
@@ -87,6 +89,12 @@ export class RedeemService {
     item.markModified('transactions');
     await item.save();
 
+    await this.updateLeaderboard(user.name, user.points);
+
     return { message: 'Redemption successful', transaction: savedTransaction };
+  }
+
+  private async updateLeaderboard(name: string, points: number) {
+    await this.leaderboardModel.findOneAndUpdate({ name }, { points }, { upsert: true });
   }
 }

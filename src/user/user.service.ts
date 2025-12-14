@@ -22,6 +22,10 @@ export class UserService {
     return crypto.randomBytes(3).toString('hex').toUpperCase().slice(0, 6);
   }
 
+  async findAll(): Promise<UserSchema[]> {
+    return this.userModel.find().exec();
+  }
+
   async register(createUserDto: CreateUserDto): Promise<UserSchema> {
     const yid = this.generateYid();
     const user = new this.userModel({ ...createUserDto, Yid: yid, points: 5 });
