@@ -17,7 +17,7 @@ export class EventSchema {
   @Prop({ default: 0 })
   completed: number;
 
-  @Prop({ required: true, type: Object })
+  @Prop({ type: Object })
   registered: Object;
 
   @Prop({ required: true })
@@ -31,7 +31,7 @@ export class EventSchema {
 
   @Prop()
   images: string;
-  
+
   @Prop()
   category: string;
 }
