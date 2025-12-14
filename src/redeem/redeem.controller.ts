@@ -38,4 +38,9 @@ export class RedeemController {
   claim(@Param('id') id: string, @Body('userId') userId: string) {
     return this.redeemService.claim(id, userId);
   }
+
+  @Post(':id/approve')
+  approve(@Param('id') id: string, @Body('transactionId') transactionId: string) {
+    return this.redeemService.approve(id, transactionId);
+  }
 }

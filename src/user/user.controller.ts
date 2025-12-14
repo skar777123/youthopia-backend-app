@@ -4,6 +4,7 @@ import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { LoginDto } from './dto/login.dto';
 import { RedeemDto } from './dto/redeem.dto';
+import { SpinDto } from './dto/spin.dto';
 
 
 @UseInterceptors(CacheInterceptor)
@@ -43,8 +44,8 @@ export class UserController {
   }
 
   @Post('spin/:yid')
-  async spinWheel(@Param('yid') yid: string) {
-    return this.userService.spinWheel(yid);
+  async spinWheel(@Param('yid') yid: string, @Body() spinDto: SpinDto) {
+    return this.userService.spinWheel(yid, spinDto);
   }
 
   @Get('points/:yid')

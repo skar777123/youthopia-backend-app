@@ -10,6 +10,9 @@ export class redeemSchema {
 
   @Prop({ type: Object })
   transactions: Object;
+
+  @Prop({ type: Object })
+  approved: Object;
 }
 
 export const redeem = SchemaFactory.createForClass(redeemSchema);

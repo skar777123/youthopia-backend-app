@@ -97,4 +97,30 @@ export class RedeemService {
   private async updateLeaderboard(name: string, points: number) {
     await this.leaderboardModel.findOneAndUpdate({ name }, { points }, { upsert: true });
   }
+
+  async approve(redeemId: string, transactionId: string): Promise<redeemSchema> {
+    const redeemItem = await this.redeemModel.findById(redeemId);
+    if (!redeemItem) {
+      throw new NotFoundException('Redeem item not found');
+    }
+
+    const transaction = redeemItem.transactions ? redeemItem.transactions[transactionId] : null;
+
+    if (!transaction) {
+      throw new NotFoundException('Transaction not found in pending requests');
+    }
+
+    // Add to approved
+    redeemItem.approved = { ...redeemItem.approved, [transactionId]: transaction };
+
+    // Remove from transactions (pending)
+    const newTransactions = { ...redeemItem.transactions };
+    delete newTransactions[transactionId];
+    redeemItem.transactions = newTransactions;
+
+    redeemItem.markModified('approved');
+    redeemItem.markModified('transactions');
+
+    return redeemItem.save();
+  }
 }

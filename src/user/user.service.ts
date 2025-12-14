@@ -5,6 +5,7 @@ import { UserSchema } from '../schema/user.schema';
 import { CreateUserDto } from './dto/create-user.dto';
 import { LoginDto } from './dto/login.dto';
 import { RedeemDto } from './dto/redeem.dto';
+import { SpinDto } from './dto/spin.dto';
 import * as crypto from 'crypto';
 
 import { leaderboardSchema } from '../schema/leaderboard.schema';
@@ -85,7 +86,7 @@ export class UserService {
     return user;
   }
 
-  async spinWheel(yid: string): Promise<{ points: number; spins: number }> {
+  async spinWheel(yid: string, spinDto?: SpinDto): Promise<{ points: number; spins: number }> {
     const user = await this.userModel.findOne({ Yid: yid });
     if (!user) {
       throw new NotFoundException('User not found');
@@ -95,9 +96,19 @@ export class UserService {
       throw new BadRequestException('No spins available');
     }
 
-    const points = Math.floor(Math.random() * 100) + 1; // Random points 1-100
+    let points = 0;
+    if (spinDto && spinDto.points !== undefined) {
+      points = spinDto.points;
+    } else {
+      points = Math.floor(Math.random() * 100) + 1; // Random points 1-100
+    }
+
     user.points += points;
-    user.spins -= 1;
+
+    // Deduct spins: use dto.spins if provided, otherwise default to 1
+    const spinsToDeduct = (spinDto && spinDto.spins !== undefined) ? spinDto.spins : 1;
+    user.spins -= spinsToDeduct;
+
     await user.save();
 
     await this.updateLeaderboard(user.name, user.points);
