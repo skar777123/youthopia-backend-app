@@ -25,12 +25,63 @@ export class EventService {
 
 
   async complete(eventId: string, userDto: ParticipateEventDto): Promise<any> {
-    const { Yid, name, _id } = userDto;
+    const { Yid, name, _id, team } = userDto;
     const event = await this.eventModel.findById(eventId);
     if (!event) {
       throw new NotFoundException('Event not found');
     }
 
+    // Check if team completion
+    if (team && Array.isArray(team) && team.length > 0) {
+      const pointsPerMember = Math.floor((event.points || 0) / team.length);
+      const completionDate = new Date();
+
+      for (const member of team) {
+        if (!member.Yid) continue;
+        const teamUser = await this.userModel.findOne({ Yid: member.Yid });
+        if (!teamUser) {
+          // Optionally log or skip
+          continue;
+        }
+
+        // Check if already completed
+        if (teamUser.completed && teamUser.completed[eventId]) {
+          continue; // Skip if already completed for this user
+        }
+
+        // Add points
+        teamUser.points += pointsPerMember;
+
+        // Update user completed
+        teamUser.completed = { ...teamUser.completed, [eventId]: { name: event.name, date: completionDate, points: pointsPerMember } };
+        teamUser.markModified('completed');
+        await teamUser.save();
+
+        // Update event completed
+        if (!event.completed) {
+          event.completed = {};
+        }
+        event.completed = { ...event.completed, [member.Yid]: { name: teamUser.name, Yid: member.Yid, date: completionDate, points: pointsPerMember } };
+        event.markModified('completed');
+
+        // Update Leaderboard
+        await this.updateLeaderboard(teamUser.name, teamUser.points);
+
+        // Create Transaction
+        const newTransaction = new this.transactionModel({
+          event: `Event Complete (Team): ${event.name}`,
+          user: { name: teamUser.name, Yid: teamUser.Yid },
+          points: pointsPerMember,
+          admin: 'System'
+        });
+        await newTransaction.save();
+      }
+
+      await event.save();
+      return { message: 'Team event completed successfully', pointsPerMember };
+    }
+
+    // Single User Completion
     const user = await this.userModel.findById(_id) as any;
     if (!user) {
       throw new NotFoundException('User not found');
@@ -54,9 +105,13 @@ export class EventService {
     user.markModified('completed');
     await user.save();
 
-    // Update event completed count (optional if needed)
-    // event.completed += 1; // Assuming completed is a number count
-    // await event.save();
+    // Update event completed
+    if (!event.completed) {
+      event.completed = {};
+    }
+    event.completed = { ...event.completed, [Yid]: { name: user.name, Yid: Yid, date: new Date(), points: points } };
+    event.markModified('completed');
+    await event.save();
 
     // Update Leaderboard
     await this.updateLeaderboard(user.name, user.points);
