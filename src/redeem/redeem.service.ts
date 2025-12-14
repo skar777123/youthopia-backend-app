@@ -23,7 +23,7 @@ export class RedeemService {
   }
 
   async findAll(): Promise<redeemSchema[]> {
-    return this.redeemModel.find().exec();
+    return this.redeemModel.find();
   }
 
   async findOne(id: string): Promise<redeemSchema> {
