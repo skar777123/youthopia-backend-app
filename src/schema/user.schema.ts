@@ -50,8 +50,8 @@ export class UserSchema {
   @Prop({ type: Object })
   Schedule: Object;
 
-  @Prop({ type: Object })
-  Spin: Object;
+  @Prop({ default: 0 })
+  spins: number;
 }
 
 export const User = SchemaFactory.createForClass(UserSchema);
