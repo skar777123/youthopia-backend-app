@@ -164,12 +164,13 @@ export class EventService {
     await event.save();
 
     // Update user registered events
-    user.registered = { ...user.registered, [eventId]: { name: event.name, date: new Date() } };
+    user.registered = { ...user.registered, [eventId]: { name: event.name, category: event.category, date: new Date() } };
     user.markModified('registered');
 
-    // Award spin for every 4th registration
-    const registrationCount = Object.keys(user.registered).length;
-    if (registrationCount % 4 === 0) {
+    // Award spin for every 4th registration of 'Engagement' category
+    const engagementEventsCount = Object.values(user.registered).filter((evt: any) => evt.category === 'Engagement').length;
+
+    if (engagementEventsCount > 0 && engagementEventsCount % 4 === 0) {
       user.spins = (user.spins || 0) + 1;
     }
     await user.save();
