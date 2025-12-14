@@ -21,7 +21,12 @@ export class EventSchema {
   registered: Object;
 
   @Prop({ required: true })
+  time: string
+  @Prop({ required: true })
   points: number;
+
+  @Prop({ required: true })
+  imageColor: string;
 
   @Prop({ required: true, type: Object })
   prizes: Object;
@@ -29,11 +34,26 @@ export class EventSchema {
   @Prop({ type: Object })
   schedule: Object;
 
+  @Prop({ default: false })
+  isTeamEvent: boolean;
+
   @Prop()
   images: string;
 
+  @Prop({ type: Array })
+  rules: string[];
+
+  @Prop()
+  quote: string;
+
   @Prop()
   category: string;
+
+  @Prop()
+  minMembers: number;
+
+  @Prop()
+  maxMembers: number;
 }
 
 export const Event = SchemaFactory.createForClass(EventSchema);

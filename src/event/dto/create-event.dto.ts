@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsNumber, IsObject, IsOptional, IsString } from 'class-validator';
+import { IsNotEmpty, IsNumber, IsObject, IsOptional, IsString, IsArray, IsBoolean } from 'class-validator';
 
 export class CreateEventDto {
     @IsNotEmpty()
@@ -40,4 +40,32 @@ export class CreateEventDto {
     @IsOptional()
     @IsString()
     category: string;
+
+    @IsNotEmpty()
+    @IsString()
+    time: string;
+
+    @IsNotEmpty()
+    @IsString()
+    imageColor: string;
+
+    @IsOptional()
+    @IsBoolean()
+    isTeamEvent: boolean;
+
+    @IsOptional()
+    @IsArray()
+    rules: string[];
+
+    @IsOptional()
+    @IsString()
+    quote: string;
+
+    @IsOptional()
+    @IsNumber()
+    minMembers: number;
+
+    @IsOptional()
+    @IsNumber()
+    maxMembers: number;
 }

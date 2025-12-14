@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { CreateEventDto } from './dto/create-event.dto';
@@ -138,6 +138,15 @@ export class EventService {
     // Update event registered
     if (!event.registered) {
       event.registered = {};
+    }
+
+    // Check team validation
+    if (event.isTeamEvent) {
+      if (!team) {
+        throw new BadRequestException('This is a team event, team name is required');
+      }
+      // logic for member count validation if team Members list was provided can go here, 
+      // but currently participate logic assumes single user processing per request.
     }
 
     const participantData = team ? { name: name, team: team, Yid: Yid } : { name: name, Yid: Yid };
