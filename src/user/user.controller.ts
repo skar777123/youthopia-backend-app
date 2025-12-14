@@ -7,7 +7,6 @@ import { RedeemDto } from './dto/redeem.dto';
 import { SpinDto } from './dto/spin.dto';
 
 
-@UseInterceptors(CacheInterceptor)
 @Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) { }
@@ -23,6 +22,7 @@ export class UserController {
   }
 
   @Get()
+  @UseInterceptors(CacheInterceptor)
   async findAll() {
     return this.userService.findAll();
   }
@@ -49,11 +49,13 @@ export class UserController {
   }
 
   @Get('points/:yid')
+  @UseInterceptors(CacheInterceptor)
   async getPoints(@Param('yid') yid: string) {
     return this.userService.getPoints(yid);
   }
 
   @Get('spins/:yid')
+  @UseInterceptors(CacheInterceptor)
   async getSpins(@Param('yid') yid: string) {
     return this.userService.getSpins(yid);
   }

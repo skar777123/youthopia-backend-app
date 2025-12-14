@@ -16,8 +16,8 @@ import { LeaderboardModule } from './leaderboard/leaderboard.module';
       isGlobal: true,
       useFactory: async () => ({
         store: redisStore,
-        host: 'localhost',
         port: 6379,
+        ttl: 1000,
       }),
     }),
     UserModule,
@@ -29,4 +29,4 @@ import { LeaderboardModule } from './leaderboard/leaderboard.module';
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule { }

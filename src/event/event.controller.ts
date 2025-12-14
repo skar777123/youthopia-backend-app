@@ -6,7 +6,6 @@ import { ParticipateEventDto } from './dto/participate-event.dto';
 import { CacheInterceptor } from '@nestjs/cache-manager';
 
 @Controller('event')
-@UseInterceptors(CacheInterceptor)
 export class EventController {
   constructor(private readonly eventService: EventService) { }
 
@@ -16,11 +15,13 @@ export class EventController {
   }
 
   @Get()
+  @UseInterceptors(CacheInterceptor)
   findAll(@Query() query: any) {
     return this.eventService.findAll(query);
   }
 
   @Get(':id')
+  @UseInterceptors(CacheInterceptor)
   findOne(@Param('id') id: string) {
     return this.eventService.findOne(id);
   }

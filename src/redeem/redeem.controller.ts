@@ -5,7 +5,6 @@ import { UpdateRedeemDto } from './dto/update-redeem.dto';
 import { CacheInterceptor } from '@nestjs/cache-manager';
 
 @Controller('redeem')
-@UseInterceptors(CacheInterceptor)
 export class RedeemController {
   constructor(private readonly redeemService: RedeemService) { }
 
@@ -15,11 +14,13 @@ export class RedeemController {
   }
 
   @Get()
+  @UseInterceptors(CacheInterceptor)
   findAll() {
     return this.redeemService.findAll();
   }
 
   @Get(':id')
+  @UseInterceptors(CacheInterceptor)
   findOne(@Param('id') id: string) {
     return this.redeemService.findOne(id);
   }
