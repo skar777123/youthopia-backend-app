@@ -1,18 +1,21 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { Document } from 'mongoose';
+
+export type AdminDocument = Admin & Document;
 
 @Schema({ timestamps: true })
-export class adminSchema {
-  @Prop()
-  name: string;
+export class Admin {
+  @Prop({ required: true })
+  admin_name: string;
 
-  @Prop()
+  @Prop({ required: true })
   password: string;
 
-  @Prop({ default: 'admin' })
-  role: String;
+  @Prop()
+  event_assigned: string;
 
-  @Prop({ type: Object })
-  transactions: Object;
+  @Prop()
+  event_code: string;
 }
 
-export const admin = SchemaFactory.createForClass(adminSchema);
+export const AdminSchema = SchemaFactory.createForClass(Admin);
