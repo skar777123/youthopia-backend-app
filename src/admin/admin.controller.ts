@@ -1,11 +1,17 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors } from '@nestjs/common';
 import { AdminService } from './admin.service';
 import { CreateAdminDto } from './dto/create-admin.dto';
+import { LoginAdminDto } from './dto/login-admin.dto';
 import { CacheInterceptor } from '@nestjs/cache-manager';
 
 @Controller('admin')
 export class AdminController {
     constructor(private readonly adminService: AdminService) { }
+
+    @Post('login')
+    login(@Body() loginAdminDto: LoginAdminDto) {
+        return this.adminService.login(loginAdminDto);
+    }
 
     @Post()
     create(@Body() createAdminDto: CreateAdminDto) {
