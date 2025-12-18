@@ -1,4 +1,18 @@
-import { IsString, IsNotEmpty, IsNumber, Min, Max, IsEnum } from 'class-validator';
+import { IsString, IsNotEmpty, IsNumber, IsArray, ValidateNested, IsOptional } from 'class-validator';
+import { Type } from 'class-transformer';
+
+class FeedbackResponseDto {
+    @IsString()
+    @IsNotEmpty()
+    questionId: string;
+
+    @IsString()
+    @IsNotEmpty()
+    questionText: string;
+
+    @IsNotEmpty()
+    answer: any;
+}
 
 export class CreateSpinFeedbackDto {
     @IsString()
@@ -10,22 +24,15 @@ export class CreateSpinFeedbackDto {
     userName: string;
 
     @IsNumber()
-    @IsNotEmpty()
+    @IsOptional()
     prizeAmount: number;
 
-    @IsNumber()
-    @Min(1)
-    @Max(5)
-    @IsNotEmpty()
-    rating: number;
-
     @IsString()
     @IsNotEmpty()
-    @IsEnum(['Events', 'Prizes', 'Community', 'Organization', 'Other'])
-    favoriteAspect: string;
+    category: string;
 
-    @IsString()
-    @IsNotEmpty()
-    @IsEnum(['Yes', 'No', 'Maybe'])
-    wouldRecommend: string;
+    @IsArray()
+    @ValidateNested({ each: true })
+    @Type(() => FeedbackResponseDto)
+    responses: FeedbackResponseDto[];
 }
