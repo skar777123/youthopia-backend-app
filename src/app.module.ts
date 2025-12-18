@@ -29,6 +29,7 @@ import { AdminModule } from './admin/admin.module';
     RedeemModule,
     LeaderboardModule,
     FeedbackModule,
+    AdminModule
   ],
   controllers: [AppController],
   providers: [AppService],
